@@ -2,16 +2,15 @@
 function deepClone(obj, map = new WeakMap()) {
     if (obj === null) return null;
     if (typeof obj !== 'object') return obj;
+    if (obj instanceof Date) return new Date(obj);
+    if (obj instanceof RegExp) return new RegExp(obj);
 
-    const exitObj = map.get(obj);
+    if (map.has(obj)) return map.get(obj); // 解决循环引用问题
 
-    if (exitObj) {
-        return exitObj;
-    }
 
     map.set(obj, obj);
 
-    let newObj = {};
+    const newObj = Array.isArray(obj) ? [] : {};
 
     for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
